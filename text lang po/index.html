@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Secret Valentine 💖</title>
+
+<style>
+body{
+    margin:0;
+    overflow:hidden;
+    height:100vh;
+    background:linear-gradient(135deg,#ffb6c1,#ffd6e7);
+    font-family:Arial;
+    perspective:800px;
+}
+
+/* LOGIN */
+#login{
+    position:absolute;
+    width:100%;
+    height:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#ffb6c1,#ffd6e7);
+    z-index:999;
+}
+
+.box{
+    background:white;
+    padding:40px;
+    border-radius:25px;
+    text-align:center;
+    box-shadow:0 0 20px rgba(0,0,0,0.2);
+}
+
+input{
+    padding:10px;
+    border-radius:10px;
+    border:1px solid #ccc;
+    font-size:16px;
+}
+
+button{
+    padding:10px 20px;
+    border:none;
+    border-radius:20px;
+    background:#ff4f81;
+    color:white;
+    cursor:pointer;
+    margin-top:10px;
+}
+
+/* MAIN */
+.container{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    background:white;
+    padding:40px;
+    border-radius:25px;
+    text-align:center;
+    box-shadow:0 0 20px rgba(0,0,0,0.2);
+    display:none;
+    z-index:10;
+}
+
+h1{ color:#ff4f81; }
+
+#yesBtn{ background:#ff4f81; color:white; }
+
+.noBtn{ background:#ffc0cb; color:#d63384; }
+
+.heart,.sparkle,.petal,.confetti3d{
+    position:absolute;
+    pointer-events:none;
+}
+
+/* 3D CONFETTI */
+.confetti3d{
+    font-size:22px;
+    animation: spinFade 2.5s linear forwards;
+    transform-style:preserve-3d;
+}
+
+@keyframes spinFade{
+    0%{transform:translate3d(0,0,0) rotateX(0) rotateY(0) scale(1);opacity:1;}
+    50%{transform:translate3d(var(--x),var(--y),200px) rotateX(360deg) rotateY(360deg) scale(1.3);}
+    100%{transform:translate3d(calc(var(--x)*2),calc(var(--y)*2),-200px) rotateX(720deg) rotateY(720deg) scale(0.5);opacity:0;}
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🔒 LOGIN -->
+<div id="login">
+<div class="box">
+<h1>🔒 Created by Dave</h1>
+<input type="password" id="pass" placeholder="password">
+<br>
+<button onclick="checkPass()">Unlock 💖</button>
+<p id="error" style="color:red;"></p>
+</div>
+</div>
+
+<!-- 💖 MAIN -->
+<div class="container" id="main">
+<h1>💖 Pwede ba manligaw sayo? 💖</h1>
+
+<button id="yesBtn" onclick="yesClicked()">Yes ❤️</button>
+<button class="noBtn" onclick="noClicked()">No 💔</button>
+</div>
+
+<!-- 🎵 AUDIO -->
+<audio id="bgMusic" loop>
+<source src="music.mp3">
+</audio>
+
+<audio id="boomSound">
+<source src="boom.mp3">
+</audio>
+
+<script>
+
+let yesSize=18;
+
+/* PASSWORD */
+function checkPass(){
+let p=document.getElementById("pass").value;
+if(p==="999999999"){
+document.getElementById("login").style.display="none";
+document.getElementById("main").style.display="block";
+}else{
+document.getElementById("error").innerText="Wrong password 💔";
+}
+}
+
+/* MUSIC */
+document.addEventListener("click",()=>{
+document.getElementById("bgMusic").play();
+},{once:true});
+
+/* HEART TRAIL */
+document.addEventListener("mousemove",(e)=>{
+let h=document.createElement("div");
+h.innerHTML="💖";
+h.className="heart";
+h.style.left=e.pageX+"px";
+h.style.top=e.pageY+"px";
+h.style.fontSize="18px";
+document.body.appendChild(h);
+setTimeout(()=>h.remove(),800);
+});
+
+/* FLOATING HEARTS */
+setInterval(()=>{
+let h=document.createElement("div");
+h.innerHTML=["❤️","💕","💖","💗","💘"][Math.floor(Math.random()*5)];
+h.className="heart";
+h.style.left=Math.random()*window.innerWidth+"px";
+h.style.top=window.innerHeight+"px";
+h.style.fontSize="22px";
+document.body.appendChild(h);
+setTimeout(()=>h.remove(),4000);
+},300);
+
+/* PETALS */
+setInterval(()=>{
+let p=document.createElement("div");
+p.innerHTML="🌸";
+p.className="petal";
+p.style.left=Math.random()*window.innerWidth+"px";
+p.style.top="-20px";
+p.style.fontSize="22px";
+document.body.appendChild(p);
+
+let y=-20;
+let f=setInterval(()=>{
+y+=3;
+p.style.top=y+"px";
+if(y>window.innerHeight){clearInterval(f);p.remove();}
+},20);
+},500);
+
+/* SPARKLES */
+setInterval(()=>{
+let s=document.createElement("div");
+s.innerHTML="✨";
+s.className="sparkle";
+s.style.left=Math.random()*window.innerWidth+"px";
+s.style.top=Math.random()*window.innerHeight+"px";
+document.body.appendChild(s);
+setTimeout(()=>s.remove(),1000);
+},300);
+
+/* FIREWORK */
+function fireworkBurst(x,y){
+
+let boom=document.getElementById("boomSound");
+boom.currentTime=0;
+boom.play();
+
+for(let i=0;i<60;i++){
+let p=document.createElement("div");
+p.innerHTML=["✨","🎆","💥","💖"][Math.floor(Math.random()*4)];
+p.style.position="absolute";
+p.style.left=x+"px";
+p.style.top=y+"px";
+document.body.appendChild(p);
+
+let a=Math.random()*2*Math.PI;
+let s=Math.random()*10+4;
+let vx=Math.cos(a)*s;
+let vy=Math.sin(a)*s;
+
+let life=0;
+let anim=setInterval(()=>{
+x+=vx;y+=vy;vy+=0.18;
+p.style.left=x+"px";
+p.style.top=y+"px";
+p.style.opacity=1-life/40;
+life++;
+if(life>40){clearInterval(anim);p.remove();}
+},20);
+}
+}
+
+/* ROCKET */
+function launchRocket(x,y,delay){
+setTimeout(()=>{
+let r=document.createElement("div");
+r.innerHTML="🚀";
+r.style.position="absolute";
+r.style.left=x+"px";
+r.style.top=window.innerHeight+"px";
+r.style.fontSize="28px";
+r.style.transition="all 1s ease-out";
+document.body.appendChild(r);
+
+setTimeout(()=>r.style.top=y+"px",50);
+
+setTimeout(()=>{
+r.remove();
+fireworkBurst(x,y);
+},1100);
+},delay);
+}
+
+/* YES */
+function yesClicked(){
+
+document.body.innerHTML=`
+<div style="text-align:center;margin-top:20%;">
+<h1 style="font-size:60px;color:#ff4f81;">💖 Yes! 💖</h1>
+<h2>Hindi mo pagsisihan na pinayagan mo ako manligaw sa'yo</h2>
+</div>`;
+
+/* ROCKETS */
+for(let i=0;i<12;i++){
+launchRocket(
+Math.random()*window.innerWidth,
+Math.random()*window.innerHeight/2,
+i*200
+);
+}
+
+/* 3D CONFETTI */
+for(let i=0;i<200;i++){
+let c=document.createElement("div");
+c.className="confetti3d";
+c.innerHTML=["🎉","🎊","💖","✨","💗"][Math.floor(Math.random()*5)];
+
+let x=(Math.random()-0.5)*600;
+let y=(Math.random()-0.5)*600;
+
+c.style.left=window.innerWidth/2+"px";
+c.style.top=window.innerHeight/2+"px";
+c.style.setProperty("--x",x+"px");
+c.style.setProperty("--y",y+"px");
+
+document.body.appendChild(c);
+setTimeout(()=>c.remove(),3000);
+}
+}
+
+/* NO */
+function noClicked(){
+
+yesSize+=10;
+document.getElementById("yesBtn").style.fontSize=yesSize+"px";
+
+let b=document.createElement("button");
+b.innerHTML="No 💔";
+b.className="noBtn";
+b.onclick=noClicked;
+b.style.position="absolute";
+b.style.left=Math.random()*(window.innerWidth-100)+"px";
+b.style.top=Math.random()*(window.innerHeight-50)+"px";
+document.body.appendChild(b);
+
+let img=document.createElement("img");
+img.src="cat.gif";
+img.style.position="absolute";
+img.style.width="120px";
+img.style.left=Math.random()*(window.innerWidth-120)+"px";
+img.style.top=Math.random()*(window.innerHeight-120)+"px";
+document.body.appendChild(img);
+
+setTimeout(()=>img.remove(),3000);
+}
+
+</script>
+
+</body>
+</html>
